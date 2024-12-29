@@ -1,0 +1,236 @@
+Table bk_siakad_users {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    firstname varchar(255) [not null]
+    lastname varchar(255) [not null]
+    email varchar(128) [not null]
+    phone varchar(32) [null]
+    username varchar(128) [not null]
+    password varchar(255) [not null]
+    role varchar(255) [not null]
+    status enum('active', 'inactive') [default: 'active', not null]
+    access_token varchar(255) [null]
+    access_token_expired_at timestamp [null]
+    email_verified_at timestamp [null]
+    phone_verified_at timestamp [null]
+    login_attempt int [default: 0, not null]
+    last_successful_login timestamp [null]
+    last_failed_login timestamp [null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_students {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    user_uuid varchar(255) [not null]
+    student_id varchar(255) [not null]
+    nim varchar(255) [not null]
+    nisn varchar(255) [not null]
+    nik varchar(255) [not null]
+    gender enum('male', 'female') [not null]
+    hobby text [null]
+    topic_of_interest text [null]
+    birthplace varchar(255) [not null]
+    birthdate datetime [not null]
+    address text [not null]
+    father_name varchar(255) [not null]
+    father_phone varchar(32) [null]
+    father_job varchar(255) [null]
+    father_salary int [default: 0, null] 
+    mother_name varchar(255) [not null]
+    mother_phone varchar(32) [null]
+    mother_job varchar(255) [null]
+    mother_salary int [default: 0, null]
+    guardian_name varchar(255) [null]
+    guardian_phone varchar(32) [null]
+    guardian_job varchar(255) [null]
+    registered_at timestamp
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table bk_siakad_teachers {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    user_uuid varchar(255) [not null]
+    teacher_id varchar(255) [not null]
+    nik varchar(255) [not null]
+    nip varchar(255) [not null]
+    nidn varchar(255) [not null]
+    npwp varchar(255) [not null]
+    address text [not null]
+    phone varchar(32) [null]
+    birthplace varchar(255) [not null]
+    birthdate datetime [not null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_classes {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    name varchar(255) [not null]
+    description text [null]
+    grade varchar(255) [not null]
+    teacher_uuid varchar(255) [not null]
+    status enum('active', 'inactive') [default: 'active', not null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_subjects {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    name varchar(255) [not null]
+    description text [null]
+    grade varchar(255) [not null]
+    teacher_uuid varchar(255) [not null]
+    status enum('active', 'inactive') [default: 'active', not null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_schedules {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    class_uuid varchar(255) [not null]
+    subject_uuid varchar(255) [not null]
+    day enum('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday') [not null]
+    start_time time [not null]
+    end_time time [not null]
+    status enum('active', 'inactive') [default: 'active', not null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_attendances {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    schedule_uuid varchar(255) [not null]
+    student_uuid varchar(255) [not null]
+    teacher_uuid varchar(255) [not null]
+    status enum('present', 'absent', 'permission') [default: 'present', not null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_score_types {
+    id int [pk, increment]
+    uuid varchar(255) [unique, not null]
+    name varchar(255) [not null]
+    value varchar(255) [not null]
+    description text [null]
+    status enum('active', 'inactive') [default: 'active', not null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_score_conversion {
+    id int [pk, increment]
+    uuid varchar(255) [unique, not null]
+    name varchar(255) [not null]
+    value varchar(255) [not null]
+    description text [null]
+    status enum('active', 'inactive') [default: 'active', not null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_scores {
+    id int [pk, increment]
+    uuid varchar(255) [unique, not null]
+    student_uuid varchar(255) [not null]
+    subject_uuid varchar(255) [not null]
+    score_type_uuid varchar(255) [not null]
+    score_conversion_uuid varchar(255) [not null]
+    score varchar(255) [not null]
+    description text [null]
+    status enum('active', 'inactive') [default: 'active', not null]
+    created_at timestamp [not null]
+    updated_at timestamp [not null]
+}
+
+Table bk_siakad_education_fee_items {
+    id int [pk, increment]
+    uuid varchar(255) [unique, not null]
+    name varchar(255) [not null]
+    nominal int [not null]
+    description text [null]
+    status enum('active', 'inactive') [default: 'active', not null]
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table bk_siakad_education_fee_payments {
+    id int [pk, increment]
+    uuid varchar(255) [unique, not null]
+    student_uuid varchar(255) [not null]
+    education_fee_item_uuid varchar(255) [not null]
+    nominal int [not null]
+    description text [null]
+    status enum('paid', 'unpaid') [default: 'unpaid', not null]
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table bk_siakad_settings {
+    id int [pk, increment]
+    uuid varchar(255) [unique, not null]
+    name varchar(255)
+    value text
+    status enum('active', 'inactive') [default: 'active', not null]
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table bk_siakad_roles {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    name varchar(255)
+    description text
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table bk_siakad_menus {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    name varchar(255)
+    url varchar(255)
+    icon varchar(255)
+    parent_id int
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table bk_siakad_user_access {
+    id int [increment, not null]
+    uuid varchar(255) [pk, unique, not null]
+    user_uuid int
+    role_uuid int
+    menu_uuid int
+    created_at timestamp
+    updated_at timestamp
+}
+
+// relationship
+Ref: bk_siakad_users.role > bk_siakad_roles.uuid
+Ref: bk_siakad_user_access.user_uuid > bk_siakad_users.uuid
+Ref: bk_siakad_user_access.role_uuid > bk_siakad_roles.uuid
+Ref: bk_siakad_user_access.menu_uuid > bk_siakad_menus.uuid
+Ref: bk_siakad_students.user_uuid - bk_siakad_users.uuid
+Ref: bk_siakad_teachers.user_uuid - bk_siakad_users.uuid
+Ref: bk_siakad_classes.teacher_uuid > bk_siakad_teachers.uuid
+Ref: bk_siakad_subjects.teacher_uuid > bk_siakad_teachers.uuid
+Ref: bk_siakad_schedules.class_uuid > bk_siakad_classes.uuid
+Ref: bk_siakad_schedules.subject_uuid > bk_siakad_subjects.uuid
+Ref: bk_siakad_attendances.schedule_uuid > bk_siakad_schedules.uuid
+Ref: bk_siakad_attendances.student_uuid > bk_siakad_students.uuid
+Ref: bk_siakad_attendances.teacher_uuid > bk_siakad_teachers.uuid
+Ref: bk_siakad_scores.student_uuid > bk_siakad_students.uuid
+Ref: bk_siakad_scores.subject_uuid > bk_siakad_subjects.uuid
+Ref: bk_siakad_scores.score_type_uuid > bk_siakad_score_types.uuid
+Ref: bk_siakad_scores.score_conversion_uuid > bk_siakad_score_conversion.uuid
+Ref: bk_siakad_education_fee_payments.student_uuid > bk_siakad_students.uuid
+Ref: bk_siakad_education_fee_payments.education_fee_item_uuid > bk_siakad_education_fee_items.uuid
