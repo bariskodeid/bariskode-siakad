@@ -1,12 +1,28 @@
 package models
 
+import (
+	"database/sql"
+	"time"
+)
+
 type User struct {
-    ID       string `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Phone    string `json:"phone"`
-	Address  string `json:"address"`
-	Role     string `json:"role"`
-    Username string `json:"username"`
-    Password string `json:"password"` // hashed
+	ID                   int    `gorm:"primaryKey"`
+	Uuid                 string `gorm:"uniqueIndex"`
+	FirstName            string
+	LastName             string
+	Email                string `gorm:"uniqueIndex;not null"`
+	Phone                string `gorm:"uniqueIndex"`
+	Username             string `gorm:"uniqueIndex;not null"`
+	Password             string
+	Role                 string
+	Status               string
+	AccessToken          string
+	AccessTokenExpiredAt sql.NullTime
+	EmailVerifiedAt      sql.NullTime
+	PhoneVerifiedAt      sql.NullTime
+	LoginAttempt         int    
+	LastSuccessfulLogin  sql.NullTime
+	LastFailedLogin      sql.NullTime
+	CreatedAt            time.Time `gorm:"autoCreateTime"`
+	UpdatedAt            time.Time `gorm:"autoUpdateTime"`
 }

@@ -1,18 +1,40 @@
 package main
 
 import (
-    "log"
+	"log"
 
-    "github.com/gin-gonic/gin"
-    "github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/config"
-    "github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/routes"
+	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/config"
+    "github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/models"
+	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/repositories"
+	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/routes"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
     config.LoadConfig()
 
+    if config.AppConfig.AppDebugMode == "true" {
+        gin.SetMode(gin.DebugMode)
+    } else {
+        gin.SetMode(gin.ReleaseMode)
+    }
+
+    err := config.InitDB()
+    if err != nil {
+        log.Fatal("failed to connect to database: ", err)
+    }
+    config.DB.AutoMigrate(&models.User{})
+
+    userRepo := repositories.NewUserRepository(config.DB)
+
     r := gin.Default()
-    routes.RegisterRoutes(r)
+    r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+        return param.TimeStamp.Format("2006-01-02 15:04:05") + " | " + param.Method + " | " + param.Path + " | " + param.ClientIP + "\n"
+    }))
+
+    r.Use(gin.Recovery())
+
+    routes.RegisterRoutes(r, userRepo)
 
     log.Printf("Auth service running on port %s", config.AppConfig.AppPort)
     if err := r.Run(":" + config.AppConfig.AppPort); err != nil {

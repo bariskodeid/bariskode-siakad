@@ -2,22 +2,31 @@ package controllers
 
 import (
 	"net/http"
+
+	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/config"
+	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/repositories"
 	"github.com/gin-gonic/gin"
-	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/utils"
 )
 
-type ProfilePayload struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Phone    string `json:"phone"`
-}
-
 func GetProfile(c *gin.Context) {
-	userID := c.Param("user_id")
-	profile, err := utils.GetUserProfile(userID)
+	userEmail := c.Param("email")
+	userRepo := repositories.NewUserRepository(config.DB)
+	user, err := userRepo.FindByEmail(userEmail)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get profile"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
-	c.JSON(http.StatusOK, profile)
+
+	c.JSON(http.StatusOK, gin.H{
+		"uuid":     user.Uuid,
+		"first_name": user.FirstName,
+		"last_name":  user.LastName,
+		"email":     user.Email,
+		"phone":     user.Phone,
+		"username":  user.Username,
+		"role":      user.Role,
+		"status":    user.Status,
+		"created_at": user.CreatedAt,
+		"updated_at": user.UpdatedAt,
+	})
 }
