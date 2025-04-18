@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/models"
@@ -49,16 +50,17 @@ func (r *UserRepository) FindByPhone(phone string) (*models.User, error) {
 
 func (r *UserRepository) Logout(uuid string) (*models.User, error) {
 	var user models.User
-	if err := r.DB.Where("uuid = ?", uuid).First(&user).Error; err != nil {
+	if err := r.DB.Where("uuid = ?", uuid).First(&user).Error; err == nil {
 		user.Status = "inactive"
 		user.AccessToken = ""
+		user.AccessTokenExpiredAt = sql.NullTime{}
 		user.UpdatedAt = time.Now()
 		if err := r.DB.Save(&user).Error; err != nil {
 			return nil, err
 		}
 		return &user, nil
 	}
-	return nil, nil
+	return &user, nil
 }
 
 func (r *UserRepository) Create(user *models.User) error {

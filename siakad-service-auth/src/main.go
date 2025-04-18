@@ -28,10 +28,6 @@ func main() {
     userRepo := repositories.NewUserRepository(config.DB)
 
     r := gin.Default()
-    r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-        return param.TimeStamp.Format("2006-01-02 15:04:05") + " | " + param.Method + " | " + param.Path + " | " + param.ClientIP + "\n"
-    }))
-
     r.Use(gin.Recovery())
 
     routes.RegisterRoutes(r, userRepo)
