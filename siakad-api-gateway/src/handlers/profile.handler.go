@@ -5,7 +5,7 @@ import (
     "net/http"
 
     "github.com/gin-gonic/gin"
-    "github.com/bariskodeid/bariskode-siakad/siakad-api-gateway/config"
+    "github.com/bariskodeid/bariskode-siakad/siakad-api-gateway/src/config"
 	"github.com/bariskodeid/bariskode-siakad/siakad-api-gateway/src/utils"
 )
 

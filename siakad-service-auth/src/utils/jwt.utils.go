@@ -1,19 +1,21 @@
 package utils
 
 import (
+	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/config"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
-	"github.com/bariskodeid/bariskode-siakad/siakad-service-auth/src/config"
 )
 
-func GenerateJWT(userUUID string) (string, error) {
-    claims := jwt.MapClaims{
-        "user_uuid": userUUID,
-        "exp":     time.Now().Add(time.Hour * 24).Unix(),
-    }
+func GenerateJWT(userUUID string, email string, role string) (string, error) {
+	claims := jwt.MapClaims{
+		"user_uuid": userUUID,
+		"email":     email,
+		"role":      role,
+		"exp":       time.Now().Add(time.Duration(config.AppConfig.JWTExpiration) * time.Second).Unix(),
+	}
 
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    return token.SignedString([]byte(config.AppConfig.JwtSecret))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(config.AppConfig.JwtSecret))
 }
 
 func RefreshToken(tokenString string) (string, error) {
@@ -32,8 +34,10 @@ func RefreshToken(tokenString string) (string, error) {
 		return "", jwt.ErrInvalidKey
 	}
 
-	userID := claims["user_uuid"].(string)
-	return GenerateJWT(userID)
+	userUUID := claims["user_uuid"].(string)
+	email := claims["email"].(string)
+	role := claims["role"].(string)
+	return GenerateJWT(userUUID, email, role)
 }
 
 func GetUserUUID(tokenString string) (string, error) {

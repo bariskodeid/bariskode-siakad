@@ -5,14 +5,14 @@ import (
     "net/http"
 
     "github.com/gin-gonic/gin"
-    "github.com/bariskodeid/bariskode-siakad/siakad-api-gateway/config"
+    "github.com/bariskodeid/bariskode-siakad/siakad-api-gateway/src/config"
     "github.com/bariskodeid/bariskode-siakad/siakad-api-gateway/src/utils"
 )
 
 func LoginHandler(c *gin.Context) {
     body, err := io.ReadAll(c.Request.Body)
     if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+        utils.RespondWithError(c, http.StatusBadRequest, "Invalid request", err)
         return
     }
 
@@ -24,13 +24,13 @@ func LoginHandler(c *gin.Context) {
 
     resp, err := utils.ForwardRequest("POST", targetURL, headers, body)
     if err != nil {
-        c.JSON(http.StatusBadGateway, gin.H{"error": "auth service unreachable"})
+        utils.RespondWithError(c, http.StatusBadGateway, "Auth service unreachable", err)
         return
     }
 
     responseBody, err := utils.ReadBody(resp)
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read response"})
+        utils.RespondWithError(c, http.StatusInternalServerError, "Failed to read response", err)
         return
     }
 
@@ -40,7 +40,7 @@ func LoginHandler(c *gin.Context) {
 func LogoutHandler(c *gin.Context) {
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		utils.RespondWithError(c, http.StatusBadRequest, "Invalid request", err)
 		return
 	}
 
@@ -52,13 +52,13 @@ func LogoutHandler(c *gin.Context) {
 
 	resp, err := utils.ForwardRequest("POST", targetURL, headers, body)
 	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": "auth service unreachable"})
+		utils.RespondWithError(c, http.StatusBadGateway, "Auth service unreachable", err)
 		return
 	}
 
 	responseBody, err := utils.ReadBody(resp)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read response"})
+		utils.RespondWithError(c, http.StatusInternalServerError, "Failed to read response", err)
 		return
 	}
 
@@ -68,7 +68,7 @@ func LogoutHandler(c *gin.Context) {
 func RegisterHandler(c *gin.Context) {
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		utils.RespondWithError(c, http.StatusBadRequest, "Invalid request", err)
 		return
 	}
 
@@ -80,13 +80,13 @@ func RegisterHandler(c *gin.Context) {
 
 	resp, err := utils.ForwardRequest("POST", targetURL, headers, body)
 	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": "auth service unreachable"})
+		utils.RespondWithError(c, http.StatusBadGateway, "Auth service unreachable", err)
 		return
 	}
 
 	responseBody, err := utils.ReadBody(resp)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read response"})
+		utils.RespondWithError(c, http.StatusInternalServerError, "Failed to read response", err)
 		return
 	}
 
